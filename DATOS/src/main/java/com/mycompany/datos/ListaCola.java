@@ -1,21 +1,26 @@
 package com.mycompany.datos;
 
+import java.util.Scanner;
+
 public class ListaCola {
     private NodoCola cabeza;
     private NodoCola cola;
+    private int contadorPedidos; // lleva el control del ID
 
     public ListaCola() {
         cabeza = null;
         cola = null;
+        contadorPedidos = 0;
     }
 
     public boolean estaVacia() {
         return cabeza == null;
     }
 
-    // Encolar (agregar pedido)
-    public void encolar(String cliente, int cantidad, String tipo) {
-        NodoCola nuevo = new NodoCola(cliente, cantidad, tipo);
+    // Encolar (agregar pedido con varios productos)
+    public void encolar(String cliente, String[] productos, int[] cantidades, int totalProductos) {
+        contadorPedidos++;
+        NodoCola nuevo = new NodoCola(contadorPedidos, cliente, productos, cantidades, totalProductos);
         if (estaVacia()) {
             cabeza = nuevo;
             cola = nuevo;
@@ -23,33 +28,84 @@ public class ListaCola {
             cola.siguiente = nuevo;
             cola = nuevo;
         }
-        System.out.println("✅ Pedido agregado a la cola.");
+        System.out.println("✅ Pedido agregado con ID: " + nuevo.id);
     }
 
-    // Desencolar (quitar primer pedido)
     public void desencolar() {
-        if (estaVacia()) {
-            System.out.println("⚠️ No hay pedidos en la cola.");
-        } else {
-            System.out.println("🗑️ Pedido eliminado: " + cabeza);
-            cabeza = cabeza.siguiente;
-            if (cabeza == null) {
-                cola = null;
-            }
-        }
+    if (estaVacia()) {
+        System.out.println("⚠️ No hay pedidos en la cola.");
+        return;
     }
 
-    // Mostrar pedidos en la cola
+    Scanner sc = new Scanner(System.in);
+    System.out.print("Ingresa el ID del pedido: ");
+    int id = sc.nextInt();
+
+    NodoCola actual = cabeza;
+    boolean encontrado = false;
+
+    while (actual != null) {
+        if (actual.id == id) {
+            encontrado = true;
+           
+            System.out.println("Productos en el pedido:");
+            for (int i = 0; i < actual.totalProductos; i++) {
+                if (actual.productos[i] != null) {
+                    System.out.println((i + 1) + ". " + actual.productos[i] + " x" + actual.cantidades[i]);
+                }
+            }
+
+            System.out.print("Ingresa el número del producto a eliminar: ");
+            int prodEliminar = sc.nextInt() - 1;
+
+            if (prodEliminar < 0 || prodEliminar >= actual.totalProductos || actual.productos[prodEliminar] == null) {
+                System.out.println("Producto no válido.");
+            } else {
+                System.out.println("Producto eliminado: " + actual.productos[prodEliminar] + " x" + actual.cantidades[prodEliminar]);
+                // Desplazar productos hacia la izquierda
+                for (int j = prodEliminar; j < actual.totalProductos - 1; j++) {
+                    actual.productos[j] = actual.productos[j + 1];
+                    actual.cantidades[j] = actual.cantidades[j + 1];
+                }
+                // Limpiar última posición
+                actual.productos[actual.totalProductos - 1] = null;
+                actual.cantidades[actual.totalProductos - 1] = 0;
+                actual.totalProductos--;
+            }
+            break;
+        }
+        actual = actual.siguiente;
+    }
+
+    if (!encontrado) {
+        System.out.println("No existe un pedido con ese ID.");
+    }
+}
+
+
+  
     public void mostrarPedidos() {
         if (estaVacia()) {
             System.out.println("No hay pedidos en la cola.");
         } else {
-            System.out.println("Lista de pedidos en cola:");
+            System.out.println("\n--- LISTADO DE PEDIDOS ---");
             NodoCola actual = cabeza;
             while (actual != null) {
                 System.out.println(" - " + actual);
                 actual = actual.siguiente;
             }
         }
+    }
+
+
+    private void reordenarIDs() {
+        NodoCola actual = cabeza;
+        int nuevoID = 1;
+        while (actual != null) {
+            actual.id = nuevoID;
+            nuevoID++;
+            actual = actual.siguiente;
+        }
+        contadorPedidos = nuevoID - 1;
     }
 }

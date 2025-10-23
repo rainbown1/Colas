@@ -20,7 +20,7 @@ public class DATOS {
 
         
         do{
-            System.out.println("\n=== MENU DE PEDIDOS ===");
+            System.out.println("\n=== MENU DE PEDIDOS GORRAS===");
             System.out.println("1. Ver producto");
             System.out.println("2. Agregar producto al pedido");
             System.out.println("3. Quitar producto en pedido");
@@ -41,47 +41,48 @@ public class DATOS {
                     break;
 
                 case 2:
-                    String tipo= "";
-                    System.out.println("Nombre del cliente: ");
+               System.out.print("Nombre del cliente: ");
                     String cliente = sc.nextLine();
-                    System.out.println("Cantidad: ");
-                    int cant = sc.nextInt();
-                    sc.nextLine();
-                    System.out.println("Producto: ");
-                    System.out.println("1-Chico");
-                    System.out.println("2-Mediano");
-                     System.out.println("3-Grande");
-                    int prod  = sc.nextInt();
 
-                    if (prod < 1 || prod > 3) {
-    System.out.println("Opción no válida.");
-} else if (cantidad[prod - 1] == 0) {
-    System.out.println("No hay stock del producto " + producto[prod - 1]);
-} else if (cantidad[prod - 1] < cant) {
-    System.out.println("Solo hay " + cantidad[prod - 1] + " unidades disponibles de " + producto[prod - 1]);
-} else {
-                    switch (prod) {
-                        case 1:
-                            System.out.println("Seleccionaste el producto chico");
-                           tipo = "Chico";
+                    String[] productosPedido = new String[3];
+                    int[] cantidadesPedido = new int[3];
+                    int contador = 0;
+
+                    String continuar;
+                    do {
+                        if (contador >= 3) {
+                            System.out.println("No puedes agregar más de 3 productos por pedido.");
+                            break;
+                        }
+
+                        System.out.println("Elige el producto:");
+                        for (int i = 0; i < producto.length; i++) {
+                            System.out.println((i + 1) + ". " + producto[i] + " (Stock: " + cantidad[i] + ")");
+                        }
+
+                        int prod = sc.nextInt();
+                        System.out.print("Cantidad: ");
+                        int cant = sc.nextInt();
+                        sc.nextLine();
+
+                        if (prod < 1 || prod > 3) {
+                            System.out.println("Opción no válida.");
+                        } else if (cantidad[prod - 1] < cant) {
+                            System.out.println("Stock insuficiente. Solo hay " + cantidad[prod - 1] + " disponibles.");
+                        } else {
                             cantidad[prod - 1] -= cant;
-                            break;
-                    
-                            case 2:
-                             System.out.println("Seleccionaste el producto mediano");
-                           tipo = "Mediano";
-                           cantidad[prod - 1] -= cant;
-                            break;
-                              case 3:
-                             System.out.println("Seleccionaste el producto Grande");
-                           tipo = "Grande";
-                           cantidad[prod - 1] -= cant;
-                            break;
-                        default:
-                            break;
-                    }
-                    colaPedidos.encolar(cliente, cant,tipo);
-                }
+                            productosPedido[contador] = producto[prod - 1];
+                            cantidadesPedido[contador] = cant;
+                            contador++;
+                            System.out.println("Producto agregado al pedido.");
+                        }
+
+                        System.out.print("Agregar otro producto al mismo pedido? (s/n): ");
+                        continuar = sc.nextLine();
+
+                    } while (continuar.equalsIgnoreCase("s"));
+
+                    colaPedidos.encolar(cliente, productosPedido, cantidadesPedido, contador);
                     break;
 
                 case 3:
