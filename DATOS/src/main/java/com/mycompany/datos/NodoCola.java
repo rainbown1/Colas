@@ -3,18 +3,18 @@ package com.mycompany.datos;
 public class NodoCola {
     String cliente;
     int cantidad;
-    String idProducto;
+    String tipo;
     NodoCola siguiente;
 
-    public NodoCola(String cliente, int cantidad, String idProducto) {
+    public NodoCola(String cliente, int cantidad, String tipo) {
         this.cliente = cliente;
         this.cantidad = cantidad;
-        this.idProducto = idProducto;
+        this.tipo = tipo;
         this.siguiente = null;
     }
 
     @Override
     public String toString() {
-        return "Cliente: " + cliente + " | Cantidad: " + cantidad + " | ID Producto: " + idProducto;
+        return "Cliente: " + cliente + " | Cantidad: " + cantidad + " | Tipo de Producto: " + tipo;
     }
 }

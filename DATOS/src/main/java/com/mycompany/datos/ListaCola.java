@@ -14,8 +14,8 @@ public class ListaCola {
     }
 
     // Encolar (agregar pedido)
-    public void encolar(String cliente, int cantidad, String idProducto) {
-        NodoCola nuevo = new NodoCola(cliente, cantidad, idProducto);
+    public void encolar(String cliente, int cantidad, String tipo) {
+        NodoCola nuevo = new NodoCola(cliente, cantidad, tipo);
         if (estaVacia()) {
             cabeza = nuevo;
             cola = nuevo;
