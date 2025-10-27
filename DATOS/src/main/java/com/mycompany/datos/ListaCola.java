@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class ListaCola {
     private NodoCola cabeza;
     private NodoCola cola;
-    private int contadorPedidos; // lleva el control del ID
+    private int contadorPedidos;
 
     public ListaCola() {
         cabeza = null;
@@ -17,7 +17,7 @@ public class ListaCola {
         return cabeza == null;
     }
 
-    // Encolar (agregar pedido con varios productos)
+   
     public void encolar(String cliente, String[] productos, int[] cantidades, int totalProductos) {
         contadorPedidos++;
         NodoCola nuevo = new NodoCola(contadorPedidos, cliente, productos, cantidades, totalProductos);
@@ -28,12 +28,12 @@ public class ListaCola {
             cola.siguiente = nuevo;
             cola = nuevo;
         }
-        System.out.println("✅ Pedido agregado con ID: " + nuevo.id);
+        System.out.println(" Pedido agregado con ID: " + nuevo.id);
     }
 
     public void desencolar() {
     if (estaVacia()) {
-        System.out.println("⚠️ No hay pedidos en la cola.");
+        System.out.println(" No hay pedidos en la cola.");
         return;
     }
 
@@ -62,12 +62,10 @@ public class ListaCola {
                 System.out.println("Producto no válido.");
             } else {
                 System.out.println("Producto eliminado: " + actual.productos[prodEliminar] + " x" + actual.cantidades[prodEliminar]);
-                // Desplazar productos hacia la izquierda
                 for (int j = prodEliminar; j < actual.totalProductos - 1; j++) {
                     actual.productos[j] = actual.productos[j + 1];
                     actual.cantidades[j] = actual.cantidades[j + 1];
                 }
-                // Limpiar última posición
                 actual.productos[actual.totalProductos - 1] = null;
                 actual.cantidades[actual.totalProductos - 1] = 0;
                 actual.totalProductos--;
@@ -108,4 +106,56 @@ public class ListaCola {
         }
         contadorPedidos = nuevoID - 1;
     }
+
+    public void levantarPedido() {
+    if (estaVacia()) {
+        System.out.println("No hay pedidos para levantar.");
+        return;
+    }
+
+    Scanner sc = new Scanner(System.in);
+    mostrarPedidos();
+
+    System.out.print("\nIngresa el ID del pedido que deseas levantar: ");
+    int idEliminar = sc.nextInt();
+
+    NodoCola actual = cabeza;
+    NodoCola anterior = null;
+    boolean encontrado = false;
+
+    while (actual != null) {
+        if (actual.id == idEliminar) {
+            encontrado = true;
+
+            System.out.println("\nPedido del cliente '" + actual.cliente + "' levantado y enviado a producción.");
+
+            
+            if (anterior == null) {
+                cabeza = actual.siguiente;
+                if (cabeza == null) {
+                    cola = null; 
+                }
+            } 
+         
+            else {
+                anterior.siguiente = actual.siguiente;
+                if (actual == cola) {
+                    cola = anterior;
+                }
+            }
+
+            reordenarIDs();
+            break;
+        }
+        anterior = actual;
+        actual = actual.siguiente;
+    }
+
+    if (!encontrado) {
+        System.out.println("No existe un pedido con ese ID.");
+    }
+}
+
+
+    
 }

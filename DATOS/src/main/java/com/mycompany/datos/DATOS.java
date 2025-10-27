@@ -94,8 +94,7 @@ public class DATOS {
                     break;
 
                 case 5:
-                    System.out.println("Pedido levantado y enviado a producción.");
-                    colaPedidos = new ListaCola();
+                    colaPedidos.levantarPedido();
                     break;
 
                 case 6:
